@@ -3,6 +3,8 @@ go-ini
 
 INI parsing library for Go.
 
+View the API documentation [here](http://godoc.org/github.com/vaughan0/go-ini).
+
 Usage
 -----
 
