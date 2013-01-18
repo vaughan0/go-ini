@@ -12,7 +12,7 @@ import (
 
 var (
 	sectionRegex = regexp.MustCompile(`^\[(.*)\]$`)
-	assignRegex  = regexp.MustCompile(`([^=]+)\s*=\s*(.*)$`)
+	assignRegex  = regexp.MustCompile(`([^=]+)=(.*)$`)
 )
 
 // ErrSyntax is returned when there is a syntax error in an INI file.
@@ -103,9 +103,11 @@ func parseFile(in *bufio.Reader, file File) (err error) {
 
 		if groups := assignRegex.FindStringSubmatch(line); groups != nil {
 			key, val := groups[1], groups[2]
+			key, val = strings.TrimSpace(key), strings.TrimSpace(val)
 			section[key] = val
 		} else if groups := sectionRegex.FindStringSubmatch(line); groups != nil {
-			section = file.Section(groups[1])
+			name := strings.TrimSpace(groups[1])
+			section = file.Section(name)
 		} else {
 			return ErrSyntax{lineNum, line}
 		}
