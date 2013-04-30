@@ -1,7 +1,7 @@
 go-ini
 ======
 
-INI parsing library for Go.
+INI parsing library for Go (golang).
 
 View the API documentation [here](http://godoc.org/github.com/vaughan0/go-ini).
 
