@@ -37,3 +37,28 @@ func TestLoad(t *testing.T) {
 	check("foo", "multiple", "equals = signs")
 	check("bar", "this", "that")
 }
+
+func TestSyntaxError(t *testing.T) {
+	src := `
+  # Line 2
+  [foo]
+  bar = baz
+  # Here's an error on line 6:
+  wut?
+  herp = derp`
+	_, err := Load(strings.NewReader(src))
+	t.Logf("%T: %v", err, err)
+	if err == nil {
+		t.Fatal("expected an error, got nil")
+	}
+	syntaxErr, ok := err.(ErrSyntax)
+	if !ok {
+		t.Fatal("expected an error of type ErrSyntax")
+	}
+	if syntaxErr.Line != 6 {
+		t.Fatal("incorrect line number")
+	}
+	if syntaxErr.Source != "wut?" {
+		t.Fatal("incorrect source")
+	}
+}
