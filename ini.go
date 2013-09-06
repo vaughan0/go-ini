@@ -67,24 +67,12 @@ func (f File) LoadFile(file string) (err error) {
 	return f.Load(in)
 }
 
-func readLine(in *bufio.Reader) (line string, err error) {
-	reading := true
-	for reading {
-		var part []byte
-		if part, reading, err = in.ReadLine(); err != nil {
-			return
-		}
-		line += string(part)
-	}
-	return
-}
-
 func parseFile(in *bufio.Reader, file File) (err error) {
 	section := file.Section("")
 	lineNum := 0
 	for {
 		var line string
-		if line, err = readLine(in); err != nil {
+		if line, err = in.ReadString('\n'); err != nil {
 			if err == io.EOF {
 				break
 			}
