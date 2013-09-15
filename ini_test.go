@@ -2,6 +2,7 @@ package ini
 
 import (
 	"strings"
+	"sort"
 	"testing"
 )
 
@@ -25,12 +26,26 @@ func TestLoad(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	sections := file.Sections()
+	sort.Strings(sections)
+	expected := []string{
+		"",
+		"bar",
+		"foo",
+	}
+	sort.Strings(expected)
+	for i := range expected {
+		if expected[i] != sections[i] {
+			t.Errorf("section mismatch: %q %q", expected[i], sections[i])
+		}
+	}
+
 	check := func(section, key, expect string) {
 		if value, _ := file.Get(section, key); value != expect {
 			t.Errorf("Get(%q, %q): expected %q, got %q", section, key, expect, value)
 		}
 	}
-
 	check("", "herp", "derp")
 	check("foo", "hello", "world")
 	check("foo", "whitespace should", "not matter")
