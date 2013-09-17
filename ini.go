@@ -12,7 +12,7 @@ import (
 
 var (
 	sectionRegex = regexp.MustCompile(`^\[(.*)\]$`)
-	assignRegex  = regexp.MustCompile(`([^=]+)=(.*)$`)
+	assignRegex  = regexp.MustCompile(`^([^=]+)=(.*)$`)
 )
 
 // ErrSyntax is returned when there is a syntax error in an INI file.
