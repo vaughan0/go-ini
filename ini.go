@@ -18,7 +18,7 @@ var (
 // ErrSyntax is returned when there is a syntax error in an INI file.
 type ErrSyntax struct {
 	Line   int
-	Source string // The contents of the erroneous line, without leading and trailing whitespace
+	Source string // The contents of the erroneous line, without leading or trailing whitespace
 }
 
 func (e ErrSyntax) Error() string {
