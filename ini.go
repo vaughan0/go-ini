@@ -31,6 +31,15 @@ type File map[string]Section
 // A Section represents a single section of an INI file.
 type Section map[string]string
 
+// Returns a slice containing all section names.
+func (f File) Sections() (secs[]string) {
+	secs = make([]string, 0, len(f))
+	for k := range f {
+		secs = append(secs, k)
+	}
+	return
+}
+
 // Returns a named Section. A Section will be created if one does not already exist for the given name.
 func (f File) Section(name string) Section {
 	section := f[name]
