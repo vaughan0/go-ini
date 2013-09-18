@@ -28,7 +28,7 @@ if !ok {
 Iterate through values in a section:
 
 ```go
-for key, value := range file.Section("mysection") {
+for key, value := range file["mysection"] {
   fmt.Printf("%s => %s\n", key, value)
 }
 ```
@@ -36,12 +36,10 @@ for key, value := range file.Section("mysection") {
 Iterate through sections in a file:
 
 ```go
-for sectionName, section := range file {
-  fmt.Printf("Section name: %s", sectionName)
+for name, section := range file {
+  fmt.Printf("Section name: %s\n", name)
 }
 ```
-Note that the current implementation always includes the empty section
-when iterating.
 
 File Format
 -----------
