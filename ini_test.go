@@ -1,6 +1,7 @@
 package ini
 
 import (
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -18,8 +19,7 @@ func TestLoad(t *testing.T) {
   multiple = equals = signs
 
   [bar]
-  this = that
-  `
+  this = that`
 
 	file, err := Load(strings.NewReader(src))
 	if err != nil {
@@ -61,4 +61,29 @@ func TestSyntaxError(t *testing.T) {
 	if syntaxErr.Source != "wut?" {
 		t.Fatal("incorrect source")
 	}
+}
+
+func TestDefinedSectionBehaviour(t *testing.T) {
+	check := func(src string, expect File) {
+		file, err := Load(strings.NewReader(src))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !reflect.DeepEqual(file, expect) {
+			t.Errorf("expected %v, got %v", expect, file)
+		}
+	}
+	// No sections for an empty file
+	check("", File{})
+	// Default section only if there are actually values for it
+	check("foo=bar", File{"": {"foo": "bar"}})
+	// User-defined sections should always be present, even if empty
+	check("[a]\n[b]\nfoo=bar", File{
+		"a": {},
+		"b": {"foo": "bar"},
+	})
+	check("foo=bar\n[a]\nthis=that", File{
+		"":  {"foo": "bar"},
+		"a": {"this": "that"},
+	})
 }

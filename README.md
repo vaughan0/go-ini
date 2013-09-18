@@ -28,8 +28,16 @@ if !ok {
 Iterate through values in a section:
 
 ```go
-for key, value := range file.Section("mysection") {
+for key, value := range file["mysection"] {
   fmt.Printf("%s => %s\n", key, value)
+}
+```
+
+Iterate through sections in a file:
+
+```go
+for name, section := range file {
+  fmt.Printf("Section name: %s\n", name)
 }
 ```
 
