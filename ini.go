@@ -70,13 +70,14 @@ func (f File) LoadFile(file string) (err error) {
 func parseFile(in *bufio.Reader, file File) (err error) {
 	section := file.Section("")
 	lineNum := 0
-	for {
+	for done := false; !done; {
 		var line string
 		if line, err = in.ReadString('\n'); err != nil {
 			if err == io.EOF {
-				break
+				done = true
+			} else {
+				return
 			}
-			return
 		}
 		lineNum++
 		line = strings.TrimSpace(line)

@@ -18,8 +18,7 @@ func TestLoad(t *testing.T) {
   multiple = equals = signs
 
   [bar]
-  this = that
-  `
+  this = that`
 
 	file, err := Load(strings.NewReader(src))
 	if err != nil {
