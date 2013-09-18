@@ -114,7 +114,7 @@ func Load(in io.Reader) (File, error) {
 	return file, err
 }
 
-// Loads and returns an ini File from a file on disk.
+// Loads and returns an INI File from a file on disk.
 func LoadFile(filename string) (File, error) {
 	file := make(File)
 	err := file.LoadFile(filename)
