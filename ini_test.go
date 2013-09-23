@@ -3,8 +3,8 @@ package ini
 import (
 	"reflect"
 	"strings"
-	"testing"
 	"syscall"
+	"testing"
 )
 
 func TestLoad(t *testing.T) {
