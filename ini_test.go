@@ -90,14 +90,14 @@ func TestDefinedSectionBehaviour(t *testing.T) {
 }
 
 func TestLoadFile(t *testing.T) {
-	originalOpenFiles := numFilesOpen()
+	originalOpenFiles := numFilesOpen(t)
 
 	file, err := LoadFile("test.ini")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	if originalOpenFiles != numFilesOpen() {
+	if originalOpenFiles != numFilesOpen(t) {
 		t.Error("test.ini not closed")
 	}
 
@@ -106,9 +106,12 @@ func TestLoadFile(t *testing.T) {
 	}
 }
 
-func numFilesOpen() (num uint64) {
+func numFilesOpen(t *testing.T) (num uint64) {
 	var rlimit syscall.Rlimit
-	syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rlimit)
+	err := syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rlimit)
+	if err != nil {
+		t.Fatal(err)
+	}
 	maxFds := int(rlimit.Cur)
 
 	var stat syscall.Stat_t
