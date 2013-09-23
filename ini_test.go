@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"syscall"
 )
 
 func TestLoad(t *testing.T) {
@@ -86,4 +87,37 @@ func TestDefinedSectionBehaviour(t *testing.T) {
 		"":  {"foo": "bar"},
 		"a": {"this": "that"},
 	})
+}
+
+func TestLoadFile(t *testing.T) {
+	originalOpenFiles := numFilesOpen()
+
+	file, err := LoadFile("test.ini")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if originalOpenFiles != numFilesOpen() {
+		t.Error("test.ini not closed")
+	}
+
+	if !reflect.DeepEqual(file, File{"default": {"stuff": "things"}}) {
+		t.Error("file not read correctly")
+	}
+}
+
+func numFilesOpen() (num uint64) {
+	var rlimit syscall.Rlimit
+	syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rlimit)
+	maxFds := int(rlimit.Cur)
+
+	var stat syscall.Stat_t
+	for i := 0; i < maxFds; i++ {
+		if syscall.Fstat(i, &stat) == nil {
+			num++
+		} else {
+			return
+		}
+	}
+	return
 }
