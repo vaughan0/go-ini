@@ -64,6 +64,7 @@ func (f File) LoadFile(file string) (err error) {
 	if err != nil {
 		return
 	}
+	defer in.Close()
 	return f.Load(in)
 }
 
