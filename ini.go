@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -45,6 +46,54 @@ func (f File) Section(name string) Section {
 func (f File) Get(section, key string) (value string, ok bool) {
 	if s := f[section]; s != nil {
 		value, ok = s[key]
+	}
+	return
+}
+
+// Looks up a value for a key in a section, converts to int using strconv and returns that value,
+// along with a boolean result similar to a map lookup.
+func (f File) GetBool(section, key string) (value bool, ok bool) {
+	var strvalue string
+	strvalue, ok = f.Get(section, key)
+	if !ok {
+		return
+	}
+	var err error
+	value, err = strconv.ParseBool(strvalue)
+	if err != nil {
+		ok = false
+	}
+	return
+}
+
+// Looks up a value for a key in a section, converts to int using strconv and returns that value,
+// along with a boolean result similar to a map lookup.
+func (f File) GetInt(section, key string) (value int, ok bool) {
+	var strvalue string
+	strvalue, ok = f.Get(section, key)
+	if !ok {
+		return
+	}
+	var err error
+	value, err = strconv.Atoi(strvalue)
+	if err != nil {
+		ok = false
+	}
+	return
+}
+
+// Looks up a value for a key in a section, converts to int64 using strconv and returns that value,
+// along with a boolean result similar to a map lookup.
+func (f File) GetInt64(section, key string) (value int64, ok bool) {
+	var strvalue string
+	strvalue, ok = f.Get(section, key)
+	if !ok {
+		return
+	}
+	var err error
+	value, err = strconv.ParseInt(strvalue, 0, 64)
+	if err != nil {
+		ok = false
 	}
 	return
 }

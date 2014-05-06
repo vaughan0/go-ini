@@ -19,14 +19,32 @@ func TestLoad(t *testing.T) {
   multiple = equals = signs
 
   [bar]
-  this = that`
+  this = that
+
+  [new]
+  positive = true
+  negative = false
+  numbers  = 25
+  bignumber = 9223372036854775807`
 
 	file, err := Load(strings.NewReader(src))
 	if err != nil {
 		t.Fatal(err)
 	}
-	check := func(section, key, expect string) {
-		if value, _ := file.Get(section, key); value != expect {
+	check := func(section, key string, expect interface{}) {
+		var value interface{}
+		switch expect.(type) {
+		case bool:
+			value, _ = file.GetBool(section, key)
+		case int:
+			value, _ = file.GetInt(section, key)
+		case int64:
+			value, _ = file.GetInt64(section, key)
+		default:
+			value, _ = file.Get(section, key)
+		}
+
+		if !reflect.DeepEqual(value, expect) {
 			t.Errorf("Get(%q, %q): expected %q, got %q", section, key, expect, value)
 		}
 	}
@@ -36,6 +54,10 @@ func TestLoad(t *testing.T) {
 	check("foo", "whitespace should", "not matter")
 	check("foo", "multiple", "equals = signs")
 	check("bar", "this", "that")
+	check("new", "positive", true)
+	check("new", "negative", false)
+	check("new", "numbers", 25)
+	check("new", "bignumber", 9223372036854775807)
 }
 
 func TestSyntaxError(t *testing.T) {
