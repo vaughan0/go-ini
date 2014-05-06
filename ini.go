@@ -50,7 +50,7 @@ func (f File) Get(section, key string) (value string, ok bool) {
 	return
 }
 
-// Looks up a value for a key in a section, converts to int using strconv and returns that value,
+// Looks up a value for a key in a section, converts to bool using strconv.ParseBool and returns that value,
 // along with a boolean result similar to a map lookup.
 func (f File) GetBool(section, key string) (value bool, ok bool) {
 	var strvalue string
