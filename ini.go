@@ -68,12 +68,13 @@ func (f File) LoadFile(file string) (err error) {
 	return f.Load(in)
 }
 
-func parseFile(in *bufio.Reader, file File) (err error) {
+func parseFile(in *bufio.Reader, file File) (parseErr error) {
 	section := ""
 	lineNum := 0
+	parseErr = nil
 	for done := false; !done; {
-		var line string
-		if line, err = in.ReadString('\n'); err != nil {
+		line, err := in.ReadString('\n')
+		if err != nil {
 			if err == io.EOF {
 				done = true
 			} else {
@@ -101,11 +102,16 @@ func parseFile(in *bufio.Reader, file File) (err error) {
 			// Create the section if it does not exist
 			file.Section(section)
 		} else {
-			return ErrSyntax{lineNum, line}
+			// Don't bail on error, just continue parsing
+			// I have a non-standard INI & I like to continue on error
+			if parseErr == nil { // don't overwrite last error
+				parseErr = ErrSyntax{lineNum, line}
+			}
+			continue
 		}
 
 	}
-	return nil
+	return // NOTE: even if you are done parsing with io.EOF, you might still return a parse error
 }
 
 // Loads and returns a File from a reader.
