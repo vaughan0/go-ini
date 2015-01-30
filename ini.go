@@ -41,6 +41,13 @@ func (f File) Section(name string) Section {
 	return section
 }
 
+// Returns boolean if a section exists
+func (f File) IsSectionExists(name string) bool {
+	section := f[name]
+
+	return section != nil
+}
+
 // Looks up a value for a key in a section and returns that value, along with a boolean result similar to a map lookup.
 func (f File) Get(section, key string) (value string, ok bool) {
 	if s := f[section]; s != nil {
