@@ -71,6 +71,8 @@ func (f File) LoadFile(file string) (err error) {
 func parseFile(in *bufio.Reader, file File) (err error) {
 	section := ""
 	lineNum := 0
+	var fullLine string
+	var wasjoining bool
 	for done := false; !done; {
 		var line string
 		if line, err = in.ReadString('\n'); err != nil {
@@ -91,18 +93,33 @@ func parseFile(in *bufio.Reader, file File) (err error) {
 			continue
 		}
 
-		if groups := assignRegex.FindStringSubmatch(line); groups != nil {
+		fullLine += line
+
+		if string(fullLine[len(fullLine)-1]) == `\` {
+			// Discard trailing \
+			fullLine = fullLine[:len(fullLine)-1]
+			wasjoining = true
+			continue
+		}
+
+		if wasjoining {
+			wasjoining = false
+		}
+
+		if groups := assignRegex.FindStringSubmatch(fullLine); groups != nil {
 			key, val := groups[1], groups[2]
 			key, val = strings.TrimSpace(key), strings.TrimSpace(val)
 			file.Section(section)[key] = val
-		} else if groups := sectionRegex.FindStringSubmatch(line); groups != nil {
+		} else if groups := sectionRegex.FindStringSubmatch(fullLine); groups != nil {
 			name := strings.TrimSpace(groups[1])
 			section = name
 			// Create the section if it does not exist
 			file.Section(section)
 		} else {
-			return ErrSyntax{lineNum, line}
+			return ErrSyntax{lineNum, fullLine}
 		}
+
+		fullLine = ""
 
 	}
 	return nil
