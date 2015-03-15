@@ -87,3 +87,28 @@ func TestDefinedSectionBehaviour(t *testing.T) {
 		"a": {"this": "that"},
 	})
 }
+
+func TestEscapeNewline(t *testing.T) {
+	// There is no space after the \ behind 'some'
+	// There is a space after the \ behind 'long'
+	src := `
+	[sectionname]
+	key = some \
+			 really long \ 
+			 value
+	something = else`
+
+	file, err := Load(strings.NewReader(src))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	check := func(section, key, expect string) {
+		if value, _ := file.Get(section, key); value != expect {
+			t.Errorf("Get(%q, %q): expected %q, got %q", section, key, expect, value)
+		}
+	}
+
+	check("sectionname", "key", "some really long value")
+	check("sectionname", "something", "else")
+}
