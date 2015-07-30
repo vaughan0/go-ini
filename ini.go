@@ -121,3 +121,25 @@ func LoadFile(filename string) (File, error) {
 	err := file.LoadFile(filename)
 	return file, err
 }
+
+// Write writes INI File into a writer.
+func Write(out io.Writer, file File) {
+	for section, options := range file {
+		fmt.Fprintln(out, "["+section+"]")
+		for key, value := range options {
+			fmt.Fprintln(out, key, "=", value)
+		}
+		fmt.Fprintln(out)
+	}
+}
+
+// WriteFile writes INI File into a file.
+func WriteFile(filename string, file File) error {
+	f, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	Write(f, file)
+	return nil
+}

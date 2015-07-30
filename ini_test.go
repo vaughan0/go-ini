@@ -87,3 +87,14 @@ func TestDefinedSectionBehaviour(t *testing.T) {
 		"a": {"this": "that"},
 	})
 }
+
+func TestWrite(t *testing.T) {
+	testIni := File{
+		"section1": {"option1": "value1", "option2": "value2"},
+		"section2": {"option3": "value3", "option4": "value4"},
+	}
+	err := WriteFile("test_write.ini", testIni)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
