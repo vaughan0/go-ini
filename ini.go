@@ -90,7 +90,13 @@ func parseFile(in *bufio.Reader, file File) (err error) {
 			// Skip comments
 			continue
 		}
-
+		// if the line have comment after section or assign
+		for i, c := range line {
+			if c == ';' || c == '#' {
+				line = line[0:i]
+				break
+			}
+		}
 		if groups := assignRegex.FindStringSubmatch(line); groups != nil {
 			key, val := groups[1], groups[2]
 			key, val = strings.TrimSpace(key), strings.TrimSpace(val)

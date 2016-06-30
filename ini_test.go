@@ -16,7 +16,10 @@ func TestLoad(t *testing.T) {
   hello=world
   whitespace should   =   not matter   
   ; sneaky semicolon-style comment
-  multiple = equals = signs
+  multiple = equals = signs;;;;;
+  chinese = 中国
+  chineseandcomment = 中国;共产党呵呵？
+  chineseandcomment2 = 中国共产党#万岁？
 
   [bar]
   this = that`
@@ -34,6 +37,9 @@ func TestLoad(t *testing.T) {
 	check("", "herp", "derp")
 	check("foo", "hello", "world")
 	check("foo", "whitespace should", "not matter")
+	check("foo", "chinese", "中国")
+	check("foo", "chineseandcomment", "中国")
+	check("foo", "chineseandcomment2", "中国共产党")
 	check("foo", "multiple", "equals = signs")
 	check("bar", "this", "that")
 }
