@@ -61,7 +61,7 @@ Example:
 ; So am I!
 
 [apples]
-colour = red or green
+colour = red or green ; color config
 shape = applish
 
 [oranges]
